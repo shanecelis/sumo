@@ -457,6 +457,7 @@ NBNodeCont::removeUnwishedNodes(NBDistrictCont& dc, NBEdgeCont& ec,
                                 bool removeGeometryNodes) {
     // load edges that shall not be modified
     std::set<std::string> edges2keep;
+    std::set<std::string> junctions2keep;
     if (removeGeometryNodes) {
         const OptionsCont& oc = OptionsCont::getOptions();
         if (oc.isSet("geometry.remove.keep-edges.input-file")) {
@@ -465,6 +466,14 @@ NBNodeCont::removeUnwishedNodes(NBDistrictCont& dc, NBEdgeCont& ec,
         if (oc.isSet("geometry.remove.keep-edges.explicit")) {
             const std::vector<std::string> edges = oc.getStringVector("geometry.remove.keep-edges.explicit");
             edges2keep.insert(edges.begin(), edges.end());
+        }
+
+        if (oc.isSet("geometry.remove.keep-junctions.input-file")) {
+            NBHelpers::loadJunctionsFromFile(oc.getString("geometry.remove.keep-junctions.input-file"), junctions2keep);
+        }
+        if (oc.isSet("geometry.remove.keep-junctions.explicit")) {
+            const std::vector<std::string> junctions = oc.getStringVector("geometry.remove.keep-junctions.explicit");
+            junctions2keep.insert(junctions.begin(), junctions.end());
         }
         // no need to keep pt stop edges, they are remapped later
         // no need to keep all pt route edges. They are validated again before writing
@@ -487,6 +496,7 @@ NBNodeCont::removeUnwishedNodes(NBDistrictCont& dc, NBEdgeCont& ec,
     for (const auto& i : myNodes) {
         NBNode* const current = i.second;
         bool remove = false;
+
         // check for completely empty nodes and check for nodes which are only geometry nodes and ask the node whether to join
         if (current->getEdges().empty() || (removeGeometryNodes && mySplit.count(current) == 0 && current->checkIsRemovable())) {
             remove = true;
@@ -497,6 +507,9 @@ NBNodeCont::removeUnwishedNodes(NBDistrictCont& dc, NBEdgeCont& ec,
                     break;
                 }
             }
+        }
+        if (junctions2keep.find(current->getID()) != junctions2keep.end()) {
+            remove = false;
         }
         // remove the node and join the geometries when wished
         if (!remove) {

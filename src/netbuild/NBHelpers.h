@@ -58,6 +58,9 @@ public:
     /// @brief Add edge ids defined in file (either ID or edge:ID per line) into the given set
     static void loadEdgesFromFile(const std::string& file, std::set<std::string>& into);
 
+    /// @brief Add edge ids defined in file (either ID or edge:ID per line) into the given set
+    static void loadJunctionsFromFile(const std::string& file, std::set<std::string>& into);
+
     /// @brief Add prefixed ids defined in file
     static void loadPrefixedIDsFomFile(const std::string& file, const std::string prefix,  std::set<std::string>& into);
 

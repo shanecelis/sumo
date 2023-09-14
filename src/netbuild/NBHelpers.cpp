@@ -99,6 +99,22 @@ NBHelpers::loadEdgesFromFile(const std::string& file, std::set<std::string>& int
     }
 }
 
+void
+NBHelpers::loadJunctionsFromFile(const std::string& file, std::set<std::string>& into) {
+    std::ifstream strm(file.c_str());
+    if (!strm.good()) {
+        throw ProcessError(TLF("Could not load names of junctions too keep from '%'.", file));
+    }
+    while (strm.good()) {
+        std::string name;
+        strm >> name;
+        into.insert(name);
+        // maybe we're loading an edge-selection
+        if (StringUtils::startsWith(name, "node:")) {
+            into.insert(name.substr(5));
+        }
+    }
+}
 
 void
 NBHelpers::loadPrefixedIDsFomFile(const std::string& file, const std::string prefix, std::set<std::string>& into) {

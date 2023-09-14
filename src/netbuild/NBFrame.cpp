@@ -171,6 +171,12 @@ NBFrame::fillOptions(OptionsCont& oc, bool forNetgen) {
     oc.addDescription("geometry.remove.keep-edges.input-file", "Processing",
                       "Ensure that the edges in FILE are not modified (Each id on a single line. Selection files from sumo-gui are also supported)");
 
+    oc.doRegister("geometry.remove.keep-junctions.explicit", new Option_StringVector());
+    oc.addDescription("geometry.remove.keep-junctions.explicit", "Processing", TL("Ensure that the given list of junctions is not modified"));
+
+    oc.doRegister("geometry.remove.keep-junctions.input-file", new Option_FileName());
+    oc.addDescription("geometry.remove.keep-junctions.input-file", "Processing",
+                      "Ensure that the junctions in FILE are not modified (Each id on a single line. Selection files from sumo-gui are also supported)");
     if (!forNetgen) {
         oc.doRegister("geometry.remove.keep-ptstops", new Option_Bool(false));
         oc.addDescription("geometry.remove.keep-ptstops", "Processing", TL("Ensure that edges with public transport stops are not modified"));
